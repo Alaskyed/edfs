@@ -1,0 +1,18 @@
+{
+    "root_path": "F:\\EDFS\\DFS\\",
+    "tmp_path": "F:\\EDFS\\tmp\\",
+    "nodes": {
+        "0133ef1d-5857-11ed-a9e4-28d0eaca3617": {
+            "address": "F:\\EDFS\\DFS\\0",
+            "storage": 1024
+        },
+        "17484fe3-5857-11ed-a678-28d0eaca3617": {
+            "address": "F:\\EDFS\\DFS\\1",
+            "storage": 1024
+        },
+        "17f81462-5857-11ed-9294-28d0eaca3617": {
+            "address": "F:\\EDFS\\DFS\\2",
+            "storage": 1024
+        }
+    }
+}
