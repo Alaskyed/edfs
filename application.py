@@ -49,12 +49,13 @@ if __name__ == '__main__':
         command = input("Please input your command (input help for details): \n")
         is_exist = judge_command(command_list, command)
         if is_exist:
-            try:
-                execute_command(command)
-            except IndexError:
-                print("Parameter Error!")
-            except:
-                print("Unknow error! Please re-enter the command.")
+            execute_command(command)
+            # try:
+            #     execute_command(command)
+            # except IndexError:
+            #     print("Parameter Error!")
+            # except:
+            #     print("Unknow error! Please re-enter the command.")
         else:
             print("Command dose not exist!")
     print("Bye bye ~")

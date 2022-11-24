@@ -24,7 +24,7 @@ def mkdir(dir_path):
 
     dir = directory_dict
     if ec.is_exist(path_list):
-        print("directory or file already exist!")
+        print("Directory or file already exist!")
         return False
     else:
         for d in path_list:
@@ -172,29 +172,6 @@ def cat(file_path):
         print(f.readline().strip())
 
 
-# def cat(file_path):
-#     path_list = file_path.strip('/').split("/")
-
-#     if not ec.is_exist(path_list):
-#         print("File is not existed!")
-#         return False
-        
-#     dir = ec.get_directory_meta()
-#     for d in path_list[:-1]:
-#         dir = dir[d]
-#     file_id = dir[path_list[-1]]
-
-#     files_meta_dict = ec.get_files_meta()
-#     first_block = files_meta_dict[file_id]["file_blocks"][0]
-        
-#     nodes_dict = ec.get_nodes()
-#     node_addr = nodes_dict[first_block['node']]['address']
-
-#     real_path = node_addr + first_block['location'] + first_block['block_id']
-#     real_path = real_path.replace("/", "\\")
-
-
-
 
 
 if __name__ == '__main__':  
@@ -208,7 +185,7 @@ if __name__ == '__main__':
     # rm("/data/covid/2021/owid-covid-data.csv")
     # put("F:\\EDFS\\dataset\\owid-covid-data.csv", "/data/covid/2021/")
     # put("F:\\EDFS\\dataset\\OxCGRT_latest.csv", "/data/covid/2021/")
-    get_partition_locations("/data/covid/2021/owid-covid-data.csv")
+    # get_partition_locations("/data/covid/2021/owid-covid-data.csv")
     # cat("/data/covid/2021/owid-covid-data.csv")
 
 

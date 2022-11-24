@@ -1,31 +1,33 @@
 import pandas as pd
 import uuid
 
+
 import edfs_core as ec
 import edfs_operation as eo
 
-import map.value_search_map as vsp
-import reduce.value_search_reduce as vsr
-import map.range_search_map as rsp
-import reduce.range_search_reduce as rsr
+
+from maps import ValueSearchMap, RangeSearchMap
+from reduces import Reduce
 
 
 # Value Research
 def value_search(file_path, field_name, value):
     # get partition paths
     partitions = ec.get_partition_info(file_path)
-    colum_names = pd.read_csv(partitions[0]['real_path']).columns
+    colum_names = pd.read_csv(partitions[0]['real_path'], low_memory=False).columns
     # geenrate job id
     job_id = str(uuid.uuid1())
 
     # map
     map_out_path = []
     for partition in partitions:
-        temp_path = vsp.value_search_map(job_id, colum_names, partition, field_name, value)
+        vsm = ValueSearchMap(job_id, colum_names, partition, field_name)
+        temp_path = vsm.mapPartition(value=value)
         map_out_path.append(temp_path)
 
     # reduce
-    result_file_path = vsr.value_search_reduce(job_id, partition, map_out_path, colum_names)
+    reduce = Reduce(job_id, partition, colum_names, map_out_path)
+    result_file_path = reduce.reduce()
     
     print("Done! The result saved in: " + result_file_path)
 
@@ -34,18 +36,20 @@ def value_search(file_path, field_name, value):
 def range_search(file_path, field_name, min=None, max=None):
     # get partition paths
     partitions = ec.get_partition_info(file_path)
-    colum_names = pd.read_csv(partitions[0]['real_path']).columns
+    colum_names = pd.read_csv(partitions[0]['real_path'], low_memory=False).columns
     # geenrate job id
     job_id = str(uuid.uuid1())
 
     # map
     map_out_path = []
     for partition in partitions:
-        temp_path = rsp.range_search_map(job_id, colum_names, partition, field_name, min, max)
+        rsm = RangeSearchMap(job_id, colum_names, partition, field_name)
+        temp_path = rsm.mapPartition(min=min, max=max)
         map_out_path.append(temp_path)
 
     # reduce
-    result_file_path = rsr.range_search_reduce(job_id, partition, map_out_path, colum_names)
+    reduce = Reduce(job_id, partition, colum_names, map_out_path)
+    result_file_path = reduce.reduce()
     
     print("Done! The result saved in: " + result_file_path)
 
