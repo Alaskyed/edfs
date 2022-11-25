@@ -11,7 +11,7 @@ from reduces import Reduce
 
 
 # Value Research
-def value_search(file_path, field_name, value):
+def value_search(file_path, target_filed, field_name, value):
     # get partition paths
     partitions = ec.get_partition_info(file_path)
     colum_names = pd.read_csv(partitions[0]['real_path'], low_memory=False).columns
@@ -22,18 +22,18 @@ def value_search(file_path, field_name, value):
     map_out_path = []
     for partition in partitions:
         vsm = ValueSearchMap(job_id, colum_names, partition, field_name)
-        temp_path = vsm.mapPartition(value=value)
+        temp_path, new_colum_names = vsm.mapPartition(target_filed=target_filed, value=value)
         map_out_path.append(temp_path)
 
     # reduce
-    reduce = Reduce(job_id, partition, colum_names, map_out_path)
+    reduce = Reduce(job_id, partition, new_colum_names, map_out_path)
     result_file_path = reduce.reduce()
     
     print("Done! The result saved in: " + result_file_path)
 
 
 ## Range Search
-def range_search(file_path, field_name, min=None, max=None):
+def range_search(file_path, target_filed, field_name, min=None, max=None):
     # get partition paths
     partitions = ec.get_partition_info(file_path)
     colum_names = pd.read_csv(partitions[0]['real_path'], low_memory=False).columns
@@ -44,11 +44,11 @@ def range_search(file_path, field_name, min=None, max=None):
     map_out_path = []
     for partition in partitions:
         rsm = RangeSearchMap(job_id, colum_names, partition, field_name)
-        temp_path = rsm.mapPartition(min=min, max=max)
+        temp_path, new_colum_names = rsm.mapPartition(target_filed=target_filed, min=min, max=max)
         map_out_path.append(temp_path)
 
     # reduce
-    reduce = Reduce(job_id, partition, colum_names, map_out_path)
+    reduce = Reduce(job_id, partition, new_colum_names, map_out_path)
     result_file_path = reduce.reduce()
     
     print("Done! The result saved in: " + result_file_path)

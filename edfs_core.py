@@ -132,20 +132,6 @@ def get_partition_info(file_path):
         real_path = get_nodes()[partition['node']]['address'] + partition["location"].replace('/', '\\') + partition['block_id']
         partition['real_path'] = real_path    
     return partition_dict
-# ================================================
-
-
-
-
-
-
-# ============================================
-
-
-
-
-
-
 
 
 

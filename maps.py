@@ -15,22 +15,22 @@ class Map():
             os.makedirs(self.temp_dir)
 
 
-    def mapPartition(self, value=None, max=None, min=None):
+    def mapPartition(self, target_filed='*', value=None, max=None, min=None):
         result = None
         # Adjust the type of search function
         # result = self.map(field_name=self.field_name, value=value)
         if value is not None:
-            result = self.map(field_name=self.field_name, value=value)
+            result = self.map(target_filed=target_filed, field_name=self.field_name, value=value)
         else:
-            result = self.map(field_name=self.field_name, max=max, min=min)
+            result = self.map(target_filed=target_filed, field_name=self.field_name, max=max, min=min)
 
         # Output the map result
         temp_file_path = self.temp_dir + "\\" + str(self.partition['block_no']) + ".part"
-        result.to_csv(temp_file_path)
+        result.to_csv(temp_file_path, index=None)
         print("\tmap " + str(self.partition['block_no']) + " execution completed!" + "Output to: " + temp_file_path)
         
         # return the temp file path (to reduce)
-        return temp_file_path
+        return temp_file_path, result.columns
 
     def map(self):
         '''
@@ -42,21 +42,35 @@ class Map():
 
 
 class ValueSearchMap(Map):
-    def map(self, field_name, value):
-        result = self.df.loc[self.df[field_name] == value]
+    def map(self, target_filed, field_name, value):
+        if target_filed == "*":
+            result = self.df.loc[self.df[field_name] == value]
+        else:
+            result = self.df.loc[self.df[field_name] == value][target_filed]
 
-        return result
+        return pd.DataFrame(result)
 
 class RangeSearchMap(Map):
-    def map(self, field_name, max, min):
+    def map(self, target_filed, field_name, max, min):
         # map
-        if min is None and max is None:
-            result = self.df.loc[ : , field_name]
-        elif min is not None and max is None:
-            result = self.df.loc[self.df[field_name] > min]
-        elif min is None and max is not None:
-            result = self.df.loc[self.df[field_name] < max]
+        if target_filed == "*":
+            if min is None and max is None:
+                result = self.df.loc[ : , field_name]
+            elif min is not None and max is None:
+                result = self.df.loc[self.df[field_name] > min]
+            elif min is None and max is not None:
+                result = self.df.loc[self.df[field_name] < max]
+            else:
+                result = self.df.loc[(self.df[field_name] > min) & (self.df[field_name] < max)]
         else:
-            result = self.df.loc[(self.df[field_name] > min) & (self.df[field_name] < max)]
-        return result
+            if min is None and max is None:
+                result = self.df.loc[ : , field_name][target_filed]
+            elif min is not None and max is None:
+                result = self.df.loc[self.df[field_name] > min][target_filed]
+            elif min is None and max is not None:
+                result = self.df.loc[self.df[field_name] < max][target_filed]
+            else:
+                result = self.df.loc[(self.df[field_name] > min) & (self.df[field_name] < max)][target_filed]            
+
+        return pd.DataFrame(result)
 

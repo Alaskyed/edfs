@@ -21,7 +21,7 @@ class Reduce():
             self.df = pd.concat([self.df, partition_df], axis=0)
 
         result_path = self.result_dir + "\\result.csv"
-        self.df.to_csv(result_path)
+        self.df.to_csv(result_path, index=None)
 
         # Delete the intermediate files (map outputs)
         dir_path = os.path.dirname(self.map_outs[0])
